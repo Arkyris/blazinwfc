@@ -42,8 +42,11 @@ export const definition = {
     },
     tiles: [
         { edges: ['AAA', 'AAA', 'AAA', 'AAA'], type: 'floor', exceptions: undefined, weight: 30 },
-        { edges: ['BBB', 'BBB', 'BBB', 'BBB'], type: 'black', exceptions: undefined, weight: 20 },
-        { edges: ['BBB', 'BCC', 'AAA', 'CCB'], type: 'wallbase', exceptions: { down: ['walltop'] } } // I later realized with the angled tilemap that wall top could actually go below wallbase but this gives an example of how exceptions should look.
+        { edges: ['BBB', 'BBB', 'BCA', 'ACB'], type: 'wall', exceptions: undefined, weight: 3 },
+        { edges: ['BBB', 'BCA', 'ACB', 'BBB'], type: 'wall', exceptions: undefined, weight: 3 },
+        { edges: ['BCA', 'ACB', 'BBB', 'BBB'], type: 'wall', exceptions: undefined, weight: 3 },
+        { edges: ['ACB', 'BBB', 'BBB', 'BCA'], type: 'wall', exceptions: undefined, weight: 3 },
+        { edges: ['ACB', 'BCA', 'AAA', 'AAA'], type: 'wall', exceptions: {down: ['wall'], left: ['wall']}, weight: 5 },
     ]
 }
 ```
@@ -61,15 +64,15 @@ The tiles must be entered in the same order as your tilemap you plan to use. (Im
 
 **type:** The type of the tile is used by the exceptions object.
 
-**exceptions:** Sometimes you will run into a situation where tiles have matching sockets but should still not be placed next to each other. For example (See socket definition image below) the floor tile can go right of tile 6 and left of tile 8. So all three have 'AAA' socket but tile 8 should not go right of tile 6 so you add wall to tile 6's right exceptions and tile 8's left exceptions.
+**exceptions:** Sometimes you will run into a situation where tiles have matching sockets but should still not be placed next to each other. For example (See socket map image below) the floor tile can go right of tile 6 and left of tile 8. So all three have 'AAA' socket but tile 8 should not go right of tile 6 so you add wall to tile 6's right exceptions and tile 8's left exceptions.
 
 **weight:** This is where you can mess around with how high of a chance a tile should have of showing up. Default is 10.
 
 
 **A closer look**
 
-When adding the sockets to your defintion make sure to read in a clockwise direction. Compare the third tile in the above code to the socket map image below. The top socket should be entered left to right, the right socket top to bottom, the bottom socket right to left and the left socket bottom to top./
-/
+When adding the sockets to your defintion make sure to read in a clockwise direction. Compare the third tile in the above code to the socket map image below. The top socket should be entered left to right, the right socket top to bottom, the bottom socket right to left and the left socket bottom to top.
+
 You can shorten sockets so 'AAA' could be just 'A' while leaving 'BCB' as needed. Watch out though for things like 'BBA' and 'BAA' don't shorten them to 'BA'. 
 
 ## Tile Socket Map
@@ -92,7 +95,7 @@ There are two example definitions in the examples folder and their corresponding
 
 I could only really find one other JavaScript implimentation of WFC https://www.npmjs.com/package/wavefunctioncollapse
 
-I ran speed tests and averaged the time over 1000 map generations of varing sizes. It is important to note that the other implimentation is also working with bitmap data. For the test I did parse out the bitmap loading to only happen once and not on every call to get a more fair comparison to how mine works. I also shutdown processes on my computer that could possibly spool up cpu usage durring a test.
+I ran speed tests and averaged the time over 1000 map generations of varing sizes. It is important to note that the other implimentation is also working with bitmap data. For the test I did parse out the bitmap loading to only happen once and not on every call to get a more fair comparison to how this one works. I also shutdown processes on my computer that could possibly spool up cpu usage durring a test.
 
 |Test   |BlazinWFC |WaveFunctionCollapse|
 |:-----:|:---------|:------------------:|
@@ -102,11 +105,11 @@ I ran speed tests and averaged the time over 1000 map generations of varing size
 
 ## Comparison
 
-**Definitions:** This is actually the reason I decided to make this package. With WaveFunctionCollapse I still cannot wrap my mind around how the definition works. I initially got the above example to work after days of bruteforcing it and when I tried to move to the angled tiles I just couldn't get them to work. It also might not be possible with a tile set that is more complex like that. I wanted to make BlazingWFC's definition more verbose and eaiser to understand. I got lucky and found coding trains video on youtube and modified how his.
+**Definitions:** This is actually the reason I decided to make this package. With WaveFunctionCollapse I still cannot wrap my mind around how the definition works. I initially got the above example to work after days of bruteforcing it and when I tried to move to the angled tiles I just couldn't get them to work. It also might not be possible with a tile set that is more complex like that. I wanted to make BlazingWFC's definition more verbose and eaiser to understand. I got lucky and found coding trains video on youtube and modified how his works.
 
-**Setup:** With BlazinWFC you only have to write your definition import the package and then you can call the collapse method. Granted both packages were set up with different purposes but there is no need to set up all the other functions used by WaveFunctionCollapse. The tiles array and their rules are also set to the WFC object as soon as you instaniate in by default instead of creating that data structure every time you want to run it, though you can also set this up yourself with the other library.
+**Setup:** With BlazinWFC you only have to write your definition import the package and then you can call the collapse method. Granted both packages were set up with different purposes but there is no need to set up all the other functions used by WaveFunctionCollapse. The tiles array and their rules are also set to the WFC object as soon as you instaniate it by default instead of creating that data structure every time you want to run it, though you can also set this up yourself with the other library.
 
-**Rollback:** With BlazinWFC rollback is built in. Sometimes collapsing will end in a contradition. It is better to rollback to a previously saved state then to start over, especially with bigger maps. More complex maps will contradict more often as well. The rollback feature also allows for some of the speed gains. I was able to forgoe updating all the cells that should be updated every cycle in exchange to having to rollback more often. 
+**Rollback:** With BlazinWFC rollback is built in. Sometimes collapsing will end in a contradition. With the other library you have to handle this yourself and the only option is to start over. It is better to rollback to a previously saved state then to start over, especially with bigger maps. More complex maps will contradict more often as well. The rollback feature also allows for some of the speed gains. I was able to forego updating all the cells that should be updated every cycle in exchange for having to rollback more often. 
 
 
 ## Try it out
@@ -118,4 +121,4 @@ Coming soon
 2. Multi layer support. Returning 2 or more arrays with filled in alpha tiles. This will be needed for something like the angled tile example where the wall tops need a floor piece underneath them.
 3. Tile symmetry. Just to make definitions shorter.
 4. Closed off room handling, with the option to either fill them in, open them up or leave them as is for further post processing and creation of hidden rooms. (ie, the walls open up when you inspect them but thats on you)
-5. The map is designed to be tileable right now if there is a want I will make that optional.
+5. The map is designed to be tileable right now (the left and right side can match up as well as top and bottom) if there is a want I will make that optional.
