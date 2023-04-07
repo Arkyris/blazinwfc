@@ -21,7 +21,7 @@ import { definition } from 'definition.js';
 const wfc = new WFC(definition);
 ```
 
-## Properties
+## Methods
 
 ```javascript
 const map = wfc.collapse(50); // Collapses a 50x50 grid and returns an array of indexs
