@@ -12,7 +12,7 @@ Install BlazinWFC with npm
   npm install blazinwfc
 ```
     
-## Usage/Examples
+## Usage
 
 ```javascript
 import WFC from 'blazinwfc';
