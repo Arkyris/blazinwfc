@@ -17,6 +17,8 @@ import Cell from './cell.js';
  * @property {Object} nextSave - The number of cells that need to be collapsed before the map is saved
  * @property {Object} changedCells - The cells that have been changed since the last save (Used for rollback)
  * @property {Object} width - The width of the map
+ * @property {Object} coords - The coordinates of the next cell to handle
+ * @property {Object} cell - The cell being handled by the algorithm
  * @property {Object} priorityQueueWidth - The width of the priority queue (Set to the max number of options a tile has in one direction)
  */
 export default function WFC(definition) {
@@ -33,16 +35,18 @@ export default function WFC(definition) {
     let nextSave;
     let changedCells;
     let width;
+    let coords;
+    let cell;
 
     // Fill the tiles array with the tiles from the definition
     for (let i = 0; i < definition.tiles.length; i++) {
-        tiles.push(createTile(definition.tiles[i].edges, i, definition.tiles[i].type, definition.tiles[i].exceptions, definition.tiles[i].weight));
+        tiles.push(createTile(definition.tiles[i].edges, i, definition.tiles[i].type, definition.tiles[i].exceptions, definition.tiles[i].weight || definition.options.baseWeight));
     }
     // Analyze the tiles edges to get the possible options for each tile
     for (let i = 0; i < tiles.length; i++) {
         tiles[i].analyze(tiles);
     }
-
+    
     const priorityQueueWidth = setPQWidth();
 
     /**
@@ -52,10 +56,6 @@ export default function WFC(definition) {
      */
     function collapse(newWidth) {
         resetState(newWidth);
-        // The coordinates of the next cell to collapse
-        let coords;
-        // The current cell
-        let cell;
         while (collapsedCells < totalCells) {
             if (collapsedCells === 0) {
                 cell = getRandomCell();
@@ -135,8 +135,8 @@ export default function WFC(definition) {
      * @param {Number} weight - The weight of the tile (The probability of the tile being selected)
      * @returns {Object} new Tile
      */
-    function createTile(edges, index, type, exceptions = {}, weight = 10) {
-        return new Tile(edges, index, type, exceptions, weight);
+    function createTile(edges, index, type, exceptions, weight, baseWeight) {
+        return new Tile(edges, index, type, exceptions, weight, baseWeight);
     }
 
     /**

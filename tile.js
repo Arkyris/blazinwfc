@@ -36,10 +36,10 @@ export default function Tile(newEdges, i, newType, newExceptions = {}, newWeight
         for (let i = 0; i < tiles.length; i++) {
             let tile = tiles[i];
 
-            checkEdgeCompatibility(tile, i, up, 0, 2);
-            checkEdgeCompatibility(tile, i, right, 1, 3);
-            checkEdgeCompatibility(tile, i, down, 2, 0);
-            checkEdgeCompatibility(tile, i, left, 3, 1);
+            checkEdgeCompatibility(tile, i, 'up', 0, 2);
+            checkEdgeCompatibility(tile, i, 'right', 1, 3);
+            checkEdgeCompatibility(tile, i, 'down', 2, 0);
+            checkEdgeCompatibility(tile, i, 'left', 3, 1);
         }
     }
 
@@ -52,13 +52,19 @@ export default function Tile(newEdges, i, newType, newExceptions = {}, newWeight
      * @param {number} edge2 
      */
     function checkEdgeCompatibility(tile, i, direction, edge1, edge2) {
+        let directionMap = {
+            'up': up,
+            'right': right,
+            'down': down,
+            'left': left
+        }
         if (compareEdge(edges[edge1], tile.edges[edge2])) {
             if (exceptions[direction] !== undefined) {
                 if (!exceptions[direction].includes(tile.type)) {
-                    [direction].push(i);
+                    directionMap[direction].push(i);
                 }
             } else {
-                direction.push(i);
+                directionMap[direction].push(i);
             }
         }
     }
