@@ -31,7 +31,7 @@ wfc.test(50, 10); // Collapses a 50x50 grid 10 times and returns the average tim
 
 ## Definition
 
-The definition is where you define your tiles rules and set some options for the algorithm.\
+The definition is where you define your tiles rules and set some options for the algorithm.
 Examples can be found in the examples folder. The following is a small snippet of a definition.
 
 ```javascript
@@ -53,11 +53,11 @@ export const definition = {
 
 You can leave the options empty for default values to be used but you still have to leave the options property in the object
 
-**saveInterval:** This is used to determin how often a current state should be saved for rolling back the algorithm incase it gets stuck. You can run the test function and mess with this to see if you get faster results with a different percentage (0.02 == 2%). Default is 0.02./
+**saveInterval:** This is used to determine how often a current state should be saved for rolling back the algorithm incase it gets stuck. You can run the test function and mess with this to see if you get faster results with a different percentage (0.02 == 2%). Default is 0.02./
 
 **baseWeight:** This sets the default weight for tiles where weight is undefined.
 
-The tiles property is where you define the tiles to be used by the algorithm.\
+The tiles property is where you define the tiles to be used by the algorithm.
 The tiles must be entered in the same order as your tilemap you plan to use. (Images below)
 
 **edges:** You can think of these like sockets, they run in the order UP, RIGHT, DOWN, LEFT.
@@ -114,7 +114,7 @@ I ran speed tests and averaged the time over 1000 map generations of varing size
 
 ## Try it out
 
-Coming soon
+https://codepen.io/Arkyris/pen/zYmxmWv
 
 ## Planned features
 1. I do hope to make it even faster, if not for smaller maps at least for bigger ones. Suggestions are always welcome.
