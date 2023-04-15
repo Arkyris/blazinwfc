@@ -139,11 +139,14 @@ I ran speed tests (for a normal collapse) and averaged the time over 1000 map ge
 
 ## Try it out
 
+(multi layer example will be added soon)
 https://codepen.io/Arkyris/pen/zYmxmWv
 
 ## Planned features
 1. I do hope to make it even faster, if not for smaller maps at least for bigger ones. Suggestions are always welcome.
-2. Multi layer support. Returning 2 or more arrays with filled in alpha tiles. This will be needed for something like the angled tile example where the wall tops need a floor piece underneath them.
-3. Tile symmetry. Just to make definitions shorter.
-4. Closed off room handling, with the option to either fill them in, open them up or leave them as is for further post processing and creation of hidden rooms. (ie, the walls open up when you inspect them but thats on you)
-5. The map is designed to be tileable right now (the left and right side can match up as well as top and bottom) if there is a want I will make that optional.
+2. Tile symmetry. Just to make definitions shorter.
+3. Closed off room handling, with the option to either fill them in, open them up or leave them as is for further post processing and creation of hidden rooms. (ie, the walls open up when you inspect them but thats on you)
+4. The map is designed to be tileable right now (the left and right side can match up as well as top and bottom) if there is a want I will make that optional.
+
+## Completed planned features
+1. Multi layer support
