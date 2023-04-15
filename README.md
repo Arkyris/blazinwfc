@@ -56,30 +56,30 @@ You can leave the options empty for default values to be used but you still have
 
 **options:**
 
-    **collapseType:** Current options are 'normal' and 'layers'. Default is 'normal' and it can be left out if 'normal' is what you want.
+    collapseType: Current options are 'normal' and 'layers'. Default is 'normal' and it can be left out if 'normal' is what you want.
 
-    **saveInterval:** This is used to determine how often a current state should be saved for rolling back the algorithm incase it gets stuck. You can run the test function and mess with this to see if you get faster results with a different percentage (0.02 == 2%). Default is 0.02./
+    saveInterval: This is used to determine how often a current state should be saved for rolling back the algorithm incase it gets stuck. You can run the test function and mess with this to see if you get faster results with a different percentage (0.02 == 2%). Default is 0.02./
 
-    **baseWeight:** This sets the default weight for tiles where weight is undefined.
+    baseWeight: This sets the default weight for tiles where weight is undefined.
 
-    **numLayers:** If you want to do a layered collapse you need to add this property and set it to a number of layers you want.
+    numLayers: If you want to do a layered collapse you need to add this property and set it to a number of layers you want.
 
 The tiles property is where you define the tiles to be used by the algorithm.
 The tiles must be entered in the same order as your tilemap you plan to use. (Images below)
 
 **tiles:**
 
-    **edges:** You can think of these like sockets, they run in the order UP, RIGHT, DOWN, LEFT.
+    edges: You can think of these like sockets, they run in the order UP, RIGHT, DOWN, LEFT.
 
-    **type:** The type of the tile is used by the exceptions object.
+    type: The type of the tile is used by the exceptions object.
 
-    **exceptions:** Sometimes you will run into a situation where tiles have matching sockets but should still not be placed next to each other. For example (See socket map image below) the floor tile can go right of tile 6 and left of tile 8. So all three have 'AAA' socket but tile 8 should not go right of tile 6 so you add wall to tile 6's right exceptions and tile 8's left exceptions.
+    exceptions: Sometimes you will run into a situation where tiles have matching sockets but should still not be placed next to each other. For example (See socket map image below) the floor tile can go right of tile 6 and left of tile 8. So all three have 'AAA' socket but tile 8 should not go right of tile 6 so you add wall to tile 6's right exceptions and tile 8's left exceptions.
 
     **weight:** This is where you can mess around with how high of a chance a tile should have of showing up. Default is 10.
 
 **layers:**
 
-    Right now if you are doing a layered collapse you need to add this property to the definition. It should look like so.
+Right now if you are doing a layered collapse you need to add this property to the definition. It should look like so.
 
 ```javascript
     layers: {
@@ -92,7 +92,7 @@ The tiles must be entered in the same order as your tilemap you plan to use. (Im
     }
 ```
 
-    You will need to have a numbered property corresponding to each layer. The fill tile is an index to fill the final maps with. So my layer 0 is my base layer and i chose to fill it with floor tiles. Layer 1 is my layer for the tops of walls so it looks like the player is behind the wall a little, I chose an all alpha tile to fill that with.
+You will need to have a numbered property corresponding to each layer. The fill tile is an index to fill the final maps with. So my layer 0 is my base layer and i chose to fill it with floor tiles. Layer 1 is my layer for the tops of walls so it looks like the player is behind the wall a little, I chose an all alpha tile to fill that with.
 
 **A closer look**
 
