@@ -196,7 +196,7 @@ export default function WFC(definition) {
         for (let i = 0; i < changedCells.length; i++) {
             grid[changedCells[i].x][changedCells[i].y] = JSON.parse(JSON.stringify(previousStates.grid[changedCells[i].x][changedCells[i].y]));
         }
-        for (let j = 0; j < layers.length; j++) {
+        for (let j = 0; j < numLayers; j++) {
             for (let i = 0; i < changedCells.length; i++) {
                 finalMap[j][changedCells[i].x][changedCells[i].y] = layers[j].fillTile;
             }
