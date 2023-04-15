@@ -92,7 +92,7 @@ Right now if you are doing a layered collapse you need to add this property to t
     }
 ```
 
-You will need to have a numbered property corresponding to each layer. The fill tile is an index to fill the final maps with. So my layer 0 is my base layer and i chose to fill it with floor tiles. Layer 1 is my layer for the tops of walls so it looks like the player is behind the wall a little, I chose an all alpha tile to fill that with.
+You will need to have a numbered property corresponding to each layer. The fill tile is an index to fill the final maps with. So my layer 0 is my base layer and I chose to fill it with floor tiles. Layer 1 is my layer for the tops of walls so it looks like the player is behind the wall a little, I chose an all alpha tile to fill that with.
 
 **A closer look**
 
