@@ -1,6 +1,6 @@
 {
   "name": "blazinwfc",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A Wave Function Collapse implimentation in JavaScript, focusing on speed and set up for more complex tilesets.",
   "main": "wfc.js",
   "type": "module",
@@ -11,5 +11,19 @@
     "type": "git",
     "url": "https://github.com/arkyris/blazinwfc"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "wfc",
+    "wave",
+    "function",
+    "collapse",
+    "fast",
+    "wavefunctioncollapse",
+    "procedural",
+    "generation",
+    "tileset",
+    "tilemap",
+    "phaser",
+    "game"
+  ]
 }
