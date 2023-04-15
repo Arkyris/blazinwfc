@@ -140,6 +140,7 @@ I ran speed tests (for a normal collapse) and averaged the time over 1000 map ge
 ## Try it out
 
 (multi layer example will be added soon)
+
 https://codepen.io/Arkyris/pen/zYmxmWv
 
 ## Planned features
