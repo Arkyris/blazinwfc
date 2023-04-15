@@ -120,7 +120,7 @@ There are two example definitions in the examples folder and their corresponding
 
 I could only really find one other JavaScript implimentation of WFC https://www.npmjs.com/package/wavefunctioncollapse
 
-I ran speed tests and averaged the time over 1000 map generations of varing sizes. It is important to note that the other implimentation is also working with bitmap data. For the test I did parse out the bitmap loading to only happen once and not on every call to get a more fair comparison to how this one works. I also shutdown processes on my computer that could possibly spool up cpu usage durring a test.
+I ran speed tests (for a normal collapse) and averaged the time over 1000 map generations of varing sizes. It is important to note that the other implimentation is also working with bitmap data. For the test I did parse out the bitmap loading to only happen once and not on every call to get a more fair comparison to how this one works. I also shutdown processes on my computer that could possibly spool up cpu usage durring a test.
 
 |Test   |BlazinWFC |WaveFunctionCollapse|
 |:-----:|:---------|:------------------:|
