@@ -14,8 +14,10 @@
  * @property {number} weight - The weight of the tile
  * @property {number} index - The index of the tile
  * @property {Array} edges - The edges of the tile
+ * @property {String} type - The type of the tile, used for exceptions
+ * @property {number} layer - The layer of the tile, used for multiple layers
  */
-export default function Tile(newEdges, i, newType, newExceptions = {}, newWeight = 10) {
+export default function Tile(newEdges, i, newType, newExceptions = {}, newWeight = 10, newLayer = 0) {
     const edges = newEdges;
     const index = i;
     let up = [];
@@ -25,6 +27,7 @@ export default function Tile(newEdges, i, newType, newExceptions = {}, newWeight
     const exceptions = newExceptions;
     const weight = newWeight;
     const type = newType;
+    const layer = newLayer;
 
 
     /**
@@ -100,6 +103,7 @@ export default function Tile(newEdges, i, newType, newExceptions = {}, newWeight
         exceptions,
         weight,
         type,
+        layer,
         analyze
     }
 }
