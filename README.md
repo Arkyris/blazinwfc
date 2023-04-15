@@ -75,7 +75,7 @@ The tiles must be entered in the same order as your tilemap you plan to use. (Im
 
     exceptions: Sometimes you will run into a situation where tiles have matching sockets but should still not be placed next to each other. For example (See socket map image below) the floor tile can go right of tile 6 and left of tile 8. So all three have 'AAA' socket but tile 8 should not go right of tile 6 so you add wall to tile 6's right exceptions and tile 8's left exceptions.
 
-    **weight:** This is where you can mess around with how high of a chance a tile should have of showing up. Default is 10.
+    weight: This is where you can mess around with how high of a chance a tile should have of showing up. Default is 10.
 
 **layers:**
 
