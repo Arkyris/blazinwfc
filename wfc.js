@@ -382,7 +382,7 @@ export default function WFC(definition) {
         grid = Array.from(Array(newWidth), (_, x) => Array.from(Array(newWidth), (_, y) => new Cell(x, y)));
         for (let i = 0; i < numLayers; i++) {
             if (numLayers > 1) {
-                finalMap.push(Array.from(Array(newWidth), () => new Array(newWidth).fill(layers[i].fillTile)));
+                finalMap.push(Array.from(Array(newWidth), () => new Array(newWidth).fill(layers[i].fillTile ?? null)));
             } else {
                 finalMap = Array.from(Array(newWidth), () => new Array(newWidth).fill(null));
             }

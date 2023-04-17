@@ -1,6 +1,6 @@
 {
   "name": "blazinwfc",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A Wave Function Collapse implimentation in JavaScript, focusing on speed and set up for more complex tilesets.",
   "main": "wfc.js",
   "type": "module",
