@@ -94,6 +94,33 @@ Right now if you are doing a layered collapse you need to add this property to t
 
 You will need to have a numbered property corresponding to each layer. The fill tile is an index to fill the final maps with. So my layer 0 is my base layer and I chose to fill it with floor tiles. Layer 1 is my layer for the tops of walls so it looks like the player is behind the wall a little, I chose an all alpha tile to fill that with.
 
+**post:**
+
+This is for selecting what post processing functions you would like to perform on the map after generation
+
+```javascript
+    post: {
+        smallRooms: {
+            handler: 'fill',
+            floorIndex: 0,
+            fillIndex: 1,
+            alphaIndex: 25
+        }
+    }
+```
+Right now the only option is filling in small rooms (closed off rooms inside wall areas) (only enabled on the angled type definition right now).
+
+    smallRooms: This will make the smallRooms process run.
+
+        handler: How you would like to handle the small rooms. Only option right now is 'fill'.
+
+        floorIndex: The index of the floor tile in the tiles array, this is used by the makeRooms method to find all the sepperate rooms.
+
+        fillIndex: This this is the index of the tile you wish to fill the rooms in with. Probably the wall top tile.
+
+        alphaIndex: The index of an all alpha tile for replacing tiles on layers above the first.
+
+
 **A closer look**
 
 When adding the sockets to your defintion make sure to read in a clockwise direction. Compare the third tile in the above code to the socket map image below. The top socket should be entered left to right, the right socket top to bottom, the bottom socket right to left and the left socket bottom to top.

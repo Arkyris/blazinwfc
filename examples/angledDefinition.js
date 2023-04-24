@@ -40,5 +40,13 @@ export const angledDefinition = {
         1: {
             fillTile: 25,
         }
+    },
+    post: {
+        smallRooms: {
+            handler: 'fill',
+            floorIndex: 0,
+            fillIndex: 1,
+            alphaIndex: 25
+        }
     }
 }

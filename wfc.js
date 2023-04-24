@@ -21,7 +21,8 @@ import Cell from './cell.js';
  * @property {Object} cell - The cell being handled by the algorithm
  * @property {Object} priorityQueueWidth - The width of the priority queue (Set to the max number of options a tile has in one direction)
  */
-export default function WFC(definition) {
+export default function WFC(newDefinition) {
+    const definition = newDefinition;
     const saveIntervalPercentage = definition.options.saveInterval || 0.02;
     let tiles = [];
     let grid;
@@ -173,6 +174,11 @@ export default function WFC(definition) {
                 }
             }
             collapsedCells++;
+        }
+        if (definition.post) {
+            if (definition.post.smallRooms) {
+                finalMap = smallRooms(finalMap, definition.post.smallRooms.handler, definition.post.smallRooms.floorIndex, definition.post.smallRooms.fillIndex, definition.post.smallRooms.alphaIndex);
+            }
         }
         return finalMap;
     }
@@ -437,6 +443,199 @@ export default function WFC(definition) {
             }
         }
         return max;
+    }
+
+    // Post processing functions
+
+    /**
+     * @description - Post process to handle small rooms 
+     * @param {Object[]} finalMap - The final map to post process
+     * @param {String} handler - What you want to do with the small rooms (fill, open, or return the data)
+     * @param {Number} floorIndex - The index of the floor tile
+     * @param {Number} fillIndex - The index of the fill tile (probably the wall top tile)
+     * @param {Number} alphaIndex - The index of the alpha tile
+     * @returns {Object[]} - The final map with the small rooms handled
+     */
+    function smallRooms(finalMap, handler, floorIndex, fillIndex, alphaIndex) {
+        let borders;
+
+        let rooms = makeRooms(floorIndex);
+        if (Object.keys(rooms).length > 1) {
+            let largestRoom = Object.keys(rooms)[0];
+            for (let room of Object.keys(rooms)) {
+                if (rooms[room].length > rooms[largestRoom].length) {
+                    largestRoom = room;
+                }
+            }
+
+            for (let room of Object.keys(rooms)) {
+                if (room !== largestRoom) {
+                    borders = getRoomBorders(rooms[room], fillIndex);
+
+                    for (let tile of rooms[room]) {
+                        for (let i = 0; i < finalMap.length; i++) {
+                            if (i === 0) {
+                                finalMap[i][tile.x][tile.y] = fillIndex;
+                            } else if (finalMap[i][tile.x][tile.y] !== alphaIndex) {
+                                finalMap[i][tile.x][tile.y] = alphaIndex;
+                            }
+                        }
+                    }
+
+                    while (borders.length > 0) {
+                        for (let tile of borders) {
+                            let neighbors = [
+                                { x: (tile.x - 1 + finalMap[0][0].length) % finalMap[0][0].length, y: tile.y },
+                                { x: tile.x, y: (tile.y + 1 + finalMap[0].length) % finalMap[0].length },
+                                { x: (tile.x + 1 + finalMap[0][0].length) % finalMap[0][0].length, y: tile.y },
+                                { x: tile.x, y: (tile.y - 1 + finalMap[0].length) % finalMap[0].length }
+                            ];
+                            let options = Array.from({ length: tiles.length }, (v, i) => i);
+                            let directions = {
+                                0: 'down',
+                                1: 'left',
+                                2: 'up',
+                                3: 'right'
+                            }
+                            for (let neighbor of neighbors) {
+                                let layerIndex = 0;
+                                for (let l = 0; l < finalMap.length; l++) {
+                                    if (finalMap[l][neighbor.x][neighbor.y] !== alphaIndex) {
+                                        layerIndex = l;
+                                    }
+                                }
+                                if (!borders.find(cell => cell.x === neighbor.x && cell.y === neighbor.y)) {
+                                    checkValid(options, tiles[finalMap[layerIndex][neighbor.x][neighbor.y]][directions[neighbors.indexOf(neighbor)]]);
+                                }
+                            }
+                            if (options.length === 1) {
+                                finalMap[0][tile.x][tile.y] = options[0];
+                                borders.splice(borders.indexOf(tile), 1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return finalMap;
+    }
+
+    // Helper functions
+
+    /**
+     * @description - Searches the final map for the given tile index and groups all connected tiles into a room
+     * @param {Number} floorIndex - The index of the floor tile
+     * @returns {Object} - An object containing all the rooms in the map in the form {roomID: [{x: x, y: y}, ...], ...}
+     */
+    function makeRooms(floorIndex) {
+        let roomID = 0;
+        let rooms = {};
+        let start = true;
+        let currentCell;
+
+        for (let x = 0; x < finalMap[0].length; x++) {
+            for (let y = 0; y < finalMap[0][x].length; y++) {
+
+                if (finalMap[0][x][y] === floorIndex) {
+                    if (start) {
+                        rooms[roomID] = [{ x: x, y: y }];
+                        roomID++;
+                        start = false;
+                        continue;
+                    }
+                    currentCell = { x: x, y: y };
+                    roomID = placeInRoom(rooms, roomID, currentCell);
+                }
+            }
+        }
+        return rooms;
+    }
+
+    /**
+     * @description - Places the current cell in the correct room and merges rooms if necessary
+     * @param {Object} rooms - The rooms object
+     * @param {Number} roomID - The roomID
+     * @param {Object} currentCell - The current cell
+     * @returns {Number} - The roomID
+     */
+    function placeInRoom(rooms, roomID, currentCell) {
+        for (let room of Object.keys(rooms)) {
+            if (rooms[room].some(cell => {
+                if (cell.x === currentCell.x && cell.y === currentCell.y - 1 && currentCell.y > 0) {
+                    rooms[room].push({ x: currentCell.x, y: currentCell.y });
+                    mergeRooms(room, rooms, currentCell);
+                    return true;
+                } else if (cell.x === currentCell.x && cell.y === 0 && currentCell.y === finalMap[0][0].length - 1) {
+                    rooms[room].push({ x: currentCell.x, y: currentCell.y });
+                    mergeRooms(room, rooms, currentCell);
+                    return true;
+                } else if (cell.x === currentCell.x - 1 && cell.y === currentCell.y && currentCell.x > 0) {
+                    rooms[room].push({ x: currentCell.x, y: currentCell.y });
+                    mergeRooms(room, rooms, currentCell);
+                    return true;
+                } else if (cell.x === 0 && cell.y === currentCell.y && currentCell.x === finalMap[0][0].length - 1) {
+                    rooms[room].push({ x: currentCell.x, y: currentCell.y });
+                    mergeRooms(room, rooms, currentCell);
+                    return true;
+                }
+            })) {
+                return roomID;
+            }
+        }
+        rooms[roomID] = [{ x: currentCell.x, y: currentCell.y }];
+        return roomID + 1;
+    }
+
+    /**
+     * @description - Merges rooms if the current cell is adjacent to two rooms
+     * @param {Object} room - The room the current cell is in
+     * @param {Object} rooms - The rooms object
+     * @param {Object} currentCell - The current cell
+     */
+    function mergeRooms(room, rooms, currentCell) {
+        const directions = {
+            'up': { x: (currentCell.x - 1 + finalMap[0].length) % finalMap[0].length, y: currentCell.y },
+            'right': { x: currentCell.x, y: (currentCell.y + 1 + finalMap[0].length) % finalMap[0].length },
+            'down': { x: (currentCell.x + 1 + finalMap[0].length) % finalMap[0].length, y: currentCell.y },
+            'left': { x: currentCell.x, y: (currentCell.y - 1 + finalMap[0].length) % finalMap[0].length }
+        }
+        for (let direction of Object.keys(directions)) {
+            for (let otherRoom of Object.keys(rooms)) {
+                if (rooms[otherRoom].some(cell => cell.x === directions[direction].x && cell.y === directions[direction].y) && otherRoom !== room) {
+                    rooms[room] = rooms[room].concat(rooms[otherRoom]);
+                    delete rooms[otherRoom];
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * @description - Finds the borders of a room (wall tiles surrounding the room)
+     * @param {Object} room - The room to find the borders of
+     * @param {Number} fillIndex - The index of the fill tile
+     * @returns {Object[]} - An array of the border tiles
+     */
+    function getRoomBorders(room, fillIndex) {
+        let borders = [];
+        for (let j = 0; j < room.length; j++) {
+            let neighbors = [
+                { x: (room[j].x - 1 + finalMap[0].length) % finalMap[0].length, y: (room[j].y - 1 + finalMap[0][0].length) % finalMap[0][0].length },
+                { x: room[j].x, y: (room[j].y - 1 + finalMap[0][0].length) % finalMap[0][0].length },
+                { x: (room[j].x + 1 + finalMap[0].length) % finalMap[0].length, y: (room[j].y - 1 + finalMap[0][0].length) % finalMap[0][0].length },
+                { x: (room[j].x - 1 + finalMap[0].length) % finalMap[0].length, y: room[j].y },
+                { x: (room[j].x + 1 + finalMap[0].length) % finalMap[0].length, y: room[j].y },
+                { x: (room[j].x - 1 + finalMap[0].length) % finalMap[0].length, y: (room[j].y + 1 + finalMap[0][0].length) % finalMap[0][0].length },
+                { x: room[j].x, y: (room[j].y + 1 + finalMap[0][0].length) % finalMap[0][0].length },
+                { x: (room[j].x + 1 + finalMap[0].length) % finalMap[0].length, y: (room[j].y + 1 + finalMap[0][0].length) % finalMap[0][0].length }
+            ];
+            for (let k = 0; k < neighbors.length; k++) {
+                if (!room.find(cell => cell.x === neighbors[k].x && cell.y === neighbors[k].y) && finalMap[0][neighbors[k].x][neighbors[k].y] !== fillIndex) {
+                    borders.push(neighbors[k]);
+                }
+            }
+        }
+        return borders;
     }
 
     return {
